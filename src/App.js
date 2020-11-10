@@ -1,3 +1,5 @@
+import React from "react";
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -7,9 +9,9 @@ class App extends React.Component {
       clockCount: 25 * 60,
       currentTimer: "Session",
       enabled: false,
-      url: 'https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav'
+      url:
+        "https://raw.githubusercontent.com/freeCodeCamp/cdn/master/build/testable-projects-fcc/audio/BeepSound.wav",
     };
-
   }
 
   // Function to convert time in seconds
@@ -19,7 +21,7 @@ class App extends React.Component {
     let sec = count % 60;
     sec = sec < 10 ? "0" + sec : sec;
     return min + ":" + sec;
-  }
+  };
 
   handleReset = () => {
     this.setState({
@@ -28,7 +30,7 @@ class App extends React.Component {
       //changed for testing 25 * 60
       clockCount: 2,
       currentTimer: "Session",
-      enabled: false
+      enabled: false,
     });
     clearInterval(this.intervalID);
   };
@@ -38,11 +40,11 @@ class App extends React.Component {
   handleSessionIncrease = (e) => {
     if (e.target.value === "Break Length") {
       this.setState({
-        breakCount: this.state.breakCount + 1
+        breakCount: this.state.breakCount + 1,
       });
     } else if (e.target.value == "Session Length") {
       this.setState({
-        sessionCount: this.state.sessionCount + 1
+        sessionCount: this.state.sessionCount + 1,
       });
     }
   };
@@ -54,20 +56,22 @@ class App extends React.Component {
         breakCount:
           this.state.breakCount > 1
             ? this.state.breakCount - 1
-            : this.state.breakCount
+            : this.state.breakCount,
       });
-
     } else if (e.target.value == "Session Length") {
       let newTime = this.state.sessionCount - 1;
       let newSec = newTime * 60;
       // bandaid
       newSec = newSec < 60 ? 60 : newSec;
       this.setState({
-        sessionCount: this.state.sessionCount > 1 ? newTime : this.state.sessionCount,
-        clockCount: this.state.currentTimer === "Session" ? newSec : this.state.clockCount
-      })
+        sessionCount:
+          this.state.sessionCount > 1 ? newTime : this.state.sessionCount,
+        clockCount:
+          this.state.currentTimer === "Session"
+            ? newSec
+            : this.state.clockCount,
+      });
     }
-
   };
 
   // these functions must be states as es6 arrow functions
@@ -75,38 +79,45 @@ class App extends React.Component {
 
   handlePlay = () => {
     this.setState({
-      enabled: true
-    })
-    this.intervalID = setInterval(this.tick, 1000)
-
-  }
+      enabled: true,
+    });
+    this.intervalID = setInterval(this.tick, 1000);
+  };
 
   tick = () => {
     if (this.state.clockCount > 0) {
       this.setState({
-        clockCount: this.state.clockCount - 1
-      })
+        clockCount: this.state.clockCount - 1,
+      });
     } else {
       this.setState({
-        clockCount: this.state.currentTimer === "Session" ? this.state.breakCount * 60 : this.state.sessionCount * 60,
-        currentTimer: this.state.currentTimer === "Session" ? "Break" : "Session"
-      })
+        clockCount:
+          this.state.currentTimer === "Session"
+            ? this.state.breakCount * 60
+            : this.state.sessionCount * 60,
+        currentTimer:
+          this.state.currentTimer === "Session" ? "Break" : "Session",
+      });
       this.audio.play();
     }
-
-  }
-
+  };
 
   stop = () => {
     clearInterval(this.intervalID);
     this.setState({
-      enabled: false
-    })
-  }
+      enabled: false,
+    });
+  };
 
   render() {
     // destructure state to obtain values
-    const { breakCount, sessionCount, currentTimer, clockCount, enabled } = this.state;
+    const {
+      breakCount,
+      sessionCount,
+      currentTimer,
+      clockCount,
+      enabled,
+    } = this.state;
     const audio = this.state.url;
 
     const clockProps = {
@@ -116,24 +127,22 @@ class App extends React.Component {
       count: clockCount,
       title: currentTimer,
       handlePressPlay: this.handlePlay,
-      handlePressPause: this.stop
-
+      handlePressPause: this.stop,
     };
 
     const breakProps = {
       title: "Break Length",
       count: breakCount,
       handleDecrease: this.handleSessionDecrease,
-      handleIncrease: this.handleSessionIncrease
+      handleIncrease: this.handleSessionIncrease,
     };
 
     const sessionProps = {
       title: "Session Length",
       count: sessionCount,
       handleDecrease: this.handleSessionDecrease,
-      handleIncrease: this.handleSessionIncrease
+      handleIncrease: this.handleSessionIncrease,
     };
-
 
     return (
       <div>
@@ -146,10 +155,7 @@ class App extends React.Component {
           <ClockDisplay {...clockProps} />
         </div>
         {/* is it necessary to embed audio is jsx..?*/}
-        <audio
-          ref={ref => this.audio = ref}
-          src={audio}
-        />
+        <audio ref={(ref) => (this.audio = ref)} src={audio} />
       </div>
     );
   }
@@ -173,25 +179,30 @@ const SetTimer = (props) => (
 
 class ClockDisplay extends React.Component {
   render() {
-    const play = <button onClick={this.props.handlePressPlay}>
-      <i className="fas fa-play" />
-    </button>
-    const pause = <button onClick={this.props.handlePressPause}>
-      <i className="fas fa-pause" />
-    </button>
+    const play = (
+      <button onClick={this.props.handlePressPlay}>
+        <i className="fas fa-play" />
+      </button>
+    );
+    const pause = (
+      <button onClick={this.props.handlePressPause}>
+        <i className="fas fa-pause" />
+      </button>
+    );
 
     return (
       <div className="clockContainer">
         <h2>{this.props.title}</h2>
-        <span className="displayTime">{this.props.convert(this.props.count)}</span>
+        <span className="displayTime">
+          {this.props.convert(this.props.count)}
+        </span>
         <br />
-        { this.props.enable === false ? play : pause}
+        {this.props.enable === false ? play : pause}
         <button onClick={this.props.reset}>
           <i className="fas fa-sync" />
         </button>
       </div>
     );
-
   }
 }
 
